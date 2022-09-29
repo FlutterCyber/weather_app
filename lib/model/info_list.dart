@@ -1,9 +1,10 @@
 import 'package:weather_app/model/full_info_model.dart';
 
-import 'info_one.dart';
 
 class InfoList {
+
   List<FullInfo> data;
+
   String city_name;
   var lon;
   String timezone;

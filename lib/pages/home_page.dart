@@ -14,15 +14,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<FullInfo> items = [];
+  List items2 = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _apiEmpList();
+    _apiList();
   }
 
-  void _apiEmpList() {
+  void _apiList() {
     Network.GET(Network.API, Network.paramsGet()).then((response) => {
           print(response),
           _showResponse(response!),
@@ -31,13 +32,17 @@ class _HomePageState extends State<HomePage> {
 
   void _showResponse(String response) {
     InfoList infoList = Network.parseList(response);
-
+    items2.add(infoList.city_name);
+    items2.add(infoList.country_code);
+    items2.add(infoList.lat);
+    items2.add(infoList.state_code);
 
     setState(() {
       items.addAll(infoList.data);
+      items.add(infoList.data[1]);
     });
     print("Length: ${items.length}");
-    print(items);
+
     //print("Ma'lumotlar soni: ${emplist.data.length}");
 
     // EmpOne empone = Network.parseEmpOne(response);
@@ -53,8 +58,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green,
       appBar: AppBar(
+        backgroundColor: Colors.green,
         title: Text('Employee List'),
         centerTitle: true,
       ),
@@ -63,19 +68,20 @@ class _HomePageState extends State<HomePage> {
         child: ListView.builder(
             itemCount: items.length,
             itemBuilder: (ctx, i) {
-              return itemsOfList(items[i]);
+              return itemsOfList(items[i], items2);
             }),
       ),
     );
   }
 
-  Widget itemsOfList(FullInfo fullinfo){
+  Widget itemsOfList(FullInfo fullinfo, List lst) {
     return Container(
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.only(bottom: 1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text("ITEMS2 uchun: ${lst[0]}"),
           Text(
             fullinfo.weather.icon +
                 " " +
@@ -87,8 +93,16 @@ class _HomePageState extends State<HomePage> {
           SizedBox(
             height: 18,
           ),
+          Text(fullinfo.weather.code.toString()),
+          SizedBox(
+            height: 18,
+          ),
+          Text(fullinfo.wind_spd.toString()),
+          SizedBox(
+            height: 18,
+          ),
           Text(
-            "Oylik: " + fullinfo.datetime.toString() + " \$",
+            "Time: " + fullinfo.datetime.toString(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -97,6 +111,5 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
-
   }
 }
